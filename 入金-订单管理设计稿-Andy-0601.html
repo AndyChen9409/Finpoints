@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Prime · 订单管理</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f6;
+            color: #1e293b;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+        .sidebar {
+            width: 260px;
+            background: #ffffff;
+            border-right: 1px solid #e9eef3;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .logo-area {
+            padding: 24px 24px 20px 24px;
+            border-bottom: 1px solid #eff3f8;
+            margin-bottom: 16px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo i {
+            background: none;
+            color: #2563eb;
+            font-size: 26px;
+        }
+        .nav-menu {
+            flex: 1;
+            padding: 0 12px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            color: #5b6e8c;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-item i {
+            width: 22px;
+            font-size: 1.2rem;
+        }
+        .nav-item:hover {
+            background-color: #f1f5f9;
+            color: #1f3a6e;
+        }
+        .nav-item.active {
+            background-color: #eef2ff;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .sub-nav {
+            margin-left: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar-footer {
+            padding: 20px 16px 28px;
+            border-top: 1px solid #eff3f8;
+            margin-top: auto;
+        }
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            background: #f8fafc;
+        }
+        .main-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        .main-content::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .main-content::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .page-title h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .page-title p {
+            font-size: 14px;
+            color: #5b6e8c;
+            margin-top: 4px;
+        }
+        .welcome-area {
+            background: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .filter-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            border: 1px solid #edf2f7;
+        }
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 150px;
+        }
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #5b6e8c;
+        }
+        .filter-group select, .filter-group input {
+            background: #f9fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 13px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .filter-group select:focus, .filter-group input:focus {
+            border-color: #2563eb;
+        }
+        .date-range {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .date-range input {
+            width: 155px;
+        }
+        .btn-query {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-query:hover {
+            background: #1d4ed8;
+        }
+        .table-wrapper {
+            background: white;
+            border-radius: 24px;
+            border: 1px solid #edf2f7;
+            overflow-x: auto;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1600px;
+            font-size: 13px;
+        }
+        .data-table th {
+            text-align: left;
+            padding: 16px 12px;
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #334155;
+            border-bottom: 1px solid #eef2ff;
+            white-space: nowrap;
+        }
+        .data-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #f0f2f5;
+            white-space: nowrap;
+        }
+        .data-table tr:hover td {
+            background-color: #fafcff;
+        }
+        .badge-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        .action-link {
+            color: #2563eb;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .action-link:hover {
+            text-decoration: underline;
+        }
+        .detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f0f2f6;
+            z-index: 1000;
+            overflow-y: auto;
+            display: none;
+        }
+        .detail-modal.active {
+            display: block;
+        }
+        .detail-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #f8fafc;
+            min-height: 100vh;
+            padding: 20px 24px;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e9eef3;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+        .detail-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #edf2f7;
+        }
+        .detail-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px 32px;
+        }
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .info-label {
+            font-size: 12px;
+            color: #5b6e8c;
+        }
+        .info-value {
+            font-weight: 500;
+            color: #0f172a;
+            word-break: break-all;
+        }
+        .uuid-link {
+            color: #2563eb;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .node-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .node-table th, .node-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .node-table th {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+        .user-popover {
+            position: absolute;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15);
+            width: 280px;
+            padding: 16px;
+            z-index: 1100;
+            border: 1px solid #eef2ff;
+            display: none;
+        }
+        .user-popover.active {
+            display: block;
+        }
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: #2563eb20;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2563eb;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        .user-info-row {
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .user-info-label {
+            font-weight: 500;
+            color: #64748b;
+            width: 80px;
+            display: inline-block;
+        }
+        @media (max-width: 800px) {
+            .sidebar {
+                width: 80px;
+            }
+            .nav-item span:not(i) {
+                display: none;
+            }
+            .logo span {
+                display: none;
+            }
+            .main-content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="logo-area"><div class="logo"><i class="fab fa-amilia"></i><span>prime</span></div></div>
+        <div class="nav-menu">
+            <div class="nav-item"><i class="fas fa-home"></i><span>首页</span></div>
+            <div class="nav-item"><i class="fas fa-users"></i><span>客户</span></div>
+            <div class="nav-item"><i class="fas fa-clipboard-list"></i><span>审核</span></div>
+            <div class="nav-item active"><i class="fas fa-coins"></i><span>财务</span></div>
+            <div class="sub-nav">
+                <div class="nav-item" style="margin-left: 0;">财务审核</div>
+                <div class="nav-item active" style="margin-left: 20px;">订单管理</div>
+            </div>
+            <div class="nav-item"><i class="fas fa-chart-pie"></i><span>报表</span></div>
+            <div class="nav-item"><i class="fas fa-calculator"></i><span>结算</span></div>
+            <div class="nav-item"><i class="fas fa-envelope"></i><span>消息</span></div>
+            <div class="nav-item"><i class="fas fa-sliders-h"></i><span>设置</span></div>
+            <div class="nav-item"><i class="fas fa-history"></i><span>日志</span></div>
+            <div class="nav-item"><i class="fas fa-check-circle"></i><span>审批</span></div>
+        </div>
+        <div class="sidebar-footer"><div class="nav-item"><i class="fas fa-question-circle"></i><span>帮助</span></div></div>
+    </aside>
+
+    <main class="main-content" id="listPage">
+        <div class="header-bar">
+            <div class="page-title">
+                <h1>订单管理</h1>
+                <p><i class="fas fa-chart-line"></i> 财务审核 / 订单管理</p>
+            </div>
+            <div class="welcome-area"><i class="fas fa-user-circle"></i><span><strong>Admin</strong></span></div>
+        </div>
+
+        <!-- 筛选卡片：所有筛选项默认空 -->
+        <div class="filter-card">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>所有用户角色</label>
+                    <select id="filterUserRole"><option value="">全部</option><option value="client">客户</option><option value="broker">券商</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>所有发起人角色</label>
+                    <select id="filterInitiatorRole"><option value="">全部</option><option value="client">客户</option><option value="broker">券商</option><option value="system">系统</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>所有资金来源</label>
+                    <select id="filterFundSource"><option value="">全部</option><option value="wallet">钱包</option><option value="bank">银行</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>钱包</label>
+                    <select id="filterWallet"><option value="">全部</option><option value="USD">USD钱包</option><option value="HKD">HKD钱包</option></select>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>请选择操作方式</label>
+                    <select id="filterOperationType"><option value="">全部</option><option value="存款">存款</option><option value="出金">出金</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>所有订单状态</label>
+                    <select id="filterOrderStatus"><option value="">全部</option><option value="已完成">已完成</option><option value="待审核">待审核</option><option value="已拒绝">已拒绝</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>请输入最小金额</label>
+                    <div style="display: flex; gap: 8px;"><input type="number" id="minAmount" placeholder="0.00" step="0.01" style="width: 120px;"><span>USD</span></div>
+                </div>
+                <div class="filter-group">
+                    <label>请输入最大金额</label>
+                    <div style="display: flex; gap: 8px;"><input type="number" id="maxAmount" placeholder="0.00" step="0.01" style="width: 120px;"><span>USD</span></div>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>订单号</label>
+                    <input type="text" id="searchOrderNo" placeholder="请输入相应内容查询">
+                </div>
+                <div class="filter-group">
+                    <label>创建时间</label>
+                    <div class="date-range">
+                        <input type="datetime-local" id="startDate" value="2026-05-01T00:00">
+                        <span>至</span>
+                        <input type="datetime-local" id="endDate" value="2026-05-31T23:59">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <button class="btn-query" id="searchBtn"><i class="fas fa-search"></i> 查询</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格 -->
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>订单号</th><th>账户姓名</th><th>发生账户</th><th>资金流向</th><th>订单状态</th>
+                        <th>操作方式1</th><th>操作方式2</th><th>操作方式3</th>
+                        <th>原始币种</th><th>原始金额</th><th>目标币种</th><th>目标金额</th>
+                        <th>本位币发生金额</th><th>手续费</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="orderTableBody"></tbody>
+            </table>
+        </div>
+        <div style="margin-top: 16px; text-align: right; font-size:12px;">共 <span id="totalCount">0</span> 项</div>
+    </main>
+</div>
+
+<!-- 订单详情模态框 -->
+<div id="orderDetailModal" class="detail-modal">
+    <div class="detail-container">
+        <div class="detail-header">
+            <button class="back-btn" id="backToListBtn"><i class="fas fa-arrow-left"></i> 订单详情</button>
+        </div>
+        <div id="detailContent"></div>
+    </div>
+</div>
+
+<!-- 用户信息弹窗 -->
+<div id="userPopover" class="user-popover">
+    <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+    <div id="popoverContent"></div>
+</div>
+
+<script>
+    // 示例数据 (账户姓名 Andy Chen，操作方式3为数字货币在线支付)
+    const orders = [
+        {
+            orderNo: "DP202605267007041060",
+            accountName: "Andy Chen",
+            accountId: "PT1A-NGcCAGGms",
+            walletAddress: "PT1A-NGcCAGGms",
+            direction: "系统至钱包",
+            status: "已完成",
+            method1: "存款",
+            method2: "客户现金存款",
+            method3: "数字货币（在线支付）",
+            originalCurrency: "USDT",
+            originalAmount: "100.59",
+            targetCurrency: "USD",
+            targetAmount: "100.59",
+            localAmount: "USD 100.59",
+            fee: "USD 0.00",
+            paymentChannel: "Lesspay",
+            blockchain: "ERC20",
+            txHash: "0x3ov5yTimqioE...",
+            userRole: "client",
+            initiatorRole: "client",
+            fundSource: "wallet",
+            walletType: "USD",
+            operationType: "存款",
+            createTime: "2026-05-26T09:45:24",
+            nodeRecords: [{ nodeName: "创建订单", operator: "ThumWH Thumb", role: "券商", remark: "USD100.59*(1-0.003)=USD100.29", time: "26/05/2026 09:45:25", proof: "-" }],
+            userInfo: { customerId: "K6397419", registerTime: "12/05/2026 14:30:18", mobile: "+86****4872", email: "129****@qq.com", source: "Baymax App" }
+        },
+        {
+            orderNo: "DP202605212007028824",
+            accountName: "Andy Chen",
+            accountId: "kwf9-sgicQbGU6",
+            walletAddress: "kwf9-sgicQbGU6",
+            direction: "系统至钱包",
+            status: "已完成",
+            method1: "存款",
+            method2: "客户现金存款",
+            method3: "数字货币（在线支付）",
+            originalCurrency: "USDT",
+            originalAmount: "996.01",
+            targetCurrency: "USD",
+            targetAmount: "996.01",
+            localAmount: "USD 996.01",
+            fee: "USD 0.00",
+            paymentChannel: "Lesspay",
+            blockchain: "BEP20",
+            txHash: "0x7b2c3d4e5f6a...",
+            userRole: "client",
+            initiatorRole: "client",
+            fundSource: "wallet",
+            walletType: "USD",
+            operationType: "存款",
+            createTime: "2026-05-21T09:35:48",
+            nodeRecords: [{ nodeName: "创建订单", operator: "System", role: "自动", remark: "自动处理", time: "21/05/2026 09:35:48", proof: "-" }],
+            userInfo: { customerId: "K6397420", registerTime: "15/05/2026 09:12:10", mobile: "+86****1234", email: "andy****@prime.com", source: "Web App" }
+        },
+        {
+            orderNo: "DP202605126006947840",
+            accountName: "Andy Chen",
+            accountId: "i5Kn-T09gNOIQ8",
+            walletAddress: "i5Kn-T09gNOIQ8",
+            direction: "系统至钱包",
+            status: "已完成",
+            method1: "存款",
+            method2: "客户现金存款",
+            method3: "数字货币（在线支付）",
+            originalCurrency: "USDT",
+            originalAmount: "96.95",
+            targetCurrency: "USD",
+            targetAmount: "96.95",
+            localAmount: "USD 96.95",
+            fee: "USD 0.00",
+            paymentChannel: "Lesspay",
+            blockchain: "TRC20",
+            txHash: "TR7NHqjeKQxGTCi...",
+            userRole: "client",
+            initiatorRole: "client",
+            fundSource: "wallet",
+            walletType: "USD",
+            operationType: "存款",
+            createTime: "2026-05-12T13:24:19",
+            nodeRecords: [{ nodeName: "创建订单", operator: "Andy Chen", role: "客户", remark: "客户提交", time: "12/05/2026 13:24:19", proof: "-" }],
+            userInfo: { customerId: "K6397421", registerTime: "10/05/2026 11:20:00", mobile: "+86****5678", email: "andy.chen@example.com", source: "iOS App" }
+        }
+    ];
+
+    let filteredOrders = [...orders];
+
+    function renderList() {
+        const tbody = document.getElementById('orderTableBody');
+        tbody.innerHTML = '';
+        filteredOrders.forEach(order => {
+            const row = `<tr>
+                <td>${order.orderNo}</td>
+                <td>${order.accountName}</td>
+                <td>${order.walletAddress}</td>
+                <td>${order.direction}</td>
+                <td><span class="badge-status">${order.status}</span></td>
+                <td>${order.method1}</td>
+                <td>${order.method2}</td>
+                <td>${order.method3}</td>
+                <td>${order.originalCurrency}</td>
+                <td>${order.originalAmount}</td>
+                <td>${order.targetCurrency}</td>
+                <td>${order.targetAmount}</td>
+                <td>${order.localAmount}</td>
+                <td>${order.fee}</td>
+                <td><a class="action-link" data-order='${JSON.stringify(order)}'>查看</a></td>
+            </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+        document.getElementById('totalCount').innerText = filteredOrders.length;
+        document.querySelectorAll('.action-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const orderData = JSON.parse(link.getAttribute('data-order'));
+                showOrderDetail(orderData);
+            });
+        });
+    }
+
+    function showOrderDetail(order) {
+        const detailHtml = `
+            <div class="detail-card">
+                <h3>基本信息</h3>
+                <div class="info-grid">
+                    <div class="info-item"><span class="info-label">订单号</span><span class="info-value">${order.orderNo}</span></div>
+                    <div class="info-item"><span class="info-label">原始币种</span><span class="info-value">${order.originalCurrency}</span></div>
+                    <div class="info-item"><span class="info-label">原始金额</span><span class="info-value">${order.originalAmount}</span></div>
+                    <div class="info-item"><span class="info-label">目标币种</span><span class="info-value">${order.targetCurrency}</span></div>
+                    <div class="info-item"><span class="info-label">目标金额</span><span class="info-value">${order.targetAmount}</span></div>
+                    <div class="info-item"><span class="info-label">资金流向</span><span class="info-value">${order.direction}</span></div>
+                    <div class="info-item"><span class="info-label">操作方式</span><span class="info-value">${order.method1}-${order.method2}-${order.method3}</span></div>
+                    <div class="info-item"><span class="info-label">UUID</span><span class="info-value"><span class="uuid-link" data-user='${JSON.stringify(order.userInfo)}'>${order.accountName}</span></span></div>
+                    <div class="info-item"><span class="info-label">角色</span><span class="info-value">client</span></div>
+                    <div class="info-item"><span class="info-label">账户ID</span><span class="info-value">${order.accountId}</span></div>
+                    <div class="info-item"><span class="info-label">账户类型</span><span class="info-value">交易钱包</span></div>
+                    <div class="info-item"><span class="info-label">发生金额</span><span class="info-value">${order.targetCurrency} ${order.targetAmount}</span></div>
+                    <div class="info-item"><span class="info-label">手续费</span><span class="info-value">${order.fee}</span></div>
+                    <div class="info-item"><span class="info-label">本位币发生金额</span><span class="info-value">${order.localAmount}</span></div>
+                    <div class="info-item"><span class="info-label">本位币手续费</span><span class="info-value">${order.fee}</span></div>
+                    <div class="info-item"><span class="info-label">汇率</span><span class="info-value">1</span></div>
+                    <div class="info-item"><span class="info-label">外部订单号</span><span class="info-value">-</span></div>
+                    <div class="info-item"><span class="info-label">关联订单号</span><span class="info-value">-</span></div>
+                    <div class="info-item"><span class="info-label">支付渠道</span><span class="info-value">${order.paymentChannel}</span></div>
+                    <div class="info-item"><span class="info-label">区块链网络</span><span class="info-value">${order.blockchain}</span></div>
+                    <div class="info-item"><span class="info-label">链上交易哈希</span><span class="info-value">${order.txHash}</span></div>
+                </div>
+            </div>
+            <div class="detail-card">
+                <h3>节点记录</h3>
+                <table class="node-table"><thead><tr><th>节点名称</th><th>操作人</th><th>操作人角色</th><th>操作备注</th><th>时间</th><th>凭证</th></tr></thead><tbody>
+                    ${order.nodeRecords.map(rec => `<tr><td>${rec.nodeName}</td><td>${rec.operator}</td><td>${rec.role}</td><td>${rec.remark}</td><td>${rec.time}</td><td>${rec.proof}</td></tr>`).join('')}
+                </tbody></table>
+            </div>
+        `;
+        document.getElementById('detailContent').innerHTML = detailHtml;
+        document.getElementById('orderDetailModal').classList.add('active');
+        document.getElementById('listPage').style.display = 'none';
+        document.querySelectorAll('.uuid-link').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const user = JSON.parse(el.getAttribute('data-user'));
+                showUserPopover(el, user);
+            });
+        });
+    }
+
+    let currentPopover = null;
+    function showUserPopover(target, user) {
+        const popover = document.getElementById('userPopover');
+        popover.innerHTML = `<div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+            <div class="user-info-row"><span class="user-info-label">客户编号</span> ${user.customerId}</div>
+            <div class="user-info-row"><span class="user-info-label">注册时间</span> ${user.registerTime}</div>
+            <div class="user-info-row"><span class="user-info-label">手机号码</span> ${user.mobile}</div>
+            <div class="user-info-row"><span class="user-info-label">电子邮箱</span> ${user.email}</div>
+            <div class="user-info-row"><span class="user-info-label">客户来源</span> ${user.source}</div>`;
+        const rect = target.getBoundingClientRect();
+        popover.style.top = rect.bottom + window.scrollY + 8 + 'px';
+        popover.style.left = rect.left + window.scrollX + 'px';
+        popover.classList.add('active');
+        if (currentPopover) clearTimeout(currentPopover);
+        currentPopover = setTimeout(() => popover.classList.remove('active'), 5000);
+        popover.onclick = () => popover.classList.remove('active');
+    }
+
+    function applyFilters() {
+        const userRole = document.getElementById('filterUserRole').value;
+        const initiatorRole = document.getElementById('filterInitiatorRole').value;
+        const fundSource = document.getElementById('filterFundSource').value;
+        const wallet = document.getElementById('filterWallet').value;
+        const operationType = document.getElementById('filterOperationType').value;
+        const orderStatus = document.getElementById('filterOrderStatus').value;
+        const minAmount = parseFloat(document.getElementById('minAmount').value);
+        const maxAmount = parseFloat(document.getElementById('maxAmount').value);
+        const orderNoKeyword = document.getElementById('searchOrderNo').value.trim().toLowerCase();
+        const startDate = new Date(document.getElementById('startDate').value);
+        const endDate = new Date(document.getElementById('endDate').value);
+        filteredOrders = orders.filter(order => {
+            if (userRole && order.userRole !== userRole) return false;
+            if (initiatorRole && order.initiatorRole !== initiatorRole) return false;
+            if (fundSource && order.fundSource !== fundSource) return false;
+            if (wallet && order.walletType !== wallet) return false;
+            if (operationType && order.operationType !== operationType) return false;
+            if (orderStatus && order.status !== orderStatus) return false;
+            const amount = parseFloat(order.targetAmount);
+            if (!isNaN(minAmount) && amount < minAmount) return false;
+            if (!isNaN(maxAmount) && amount > maxAmount) return false;
+            if (orderNoKeyword && !order.orderNo.toLowerCase().includes(orderNoKeyword)) return false;
+            const orderDate = new Date(order.createTime);
+            if (orderDate < startDate || orderDate > endDate) return false;
+            return true;
+        });
+        renderList();
+    }
+
+    document.getElementById('backToListBtn').addEventListener('click', () => {
+        document.getElementById('orderDetailModal').classList.remove('active');
+        document.getElementById('listPage').style.display = 'block';
+    });
+    document.getElementById('searchBtn').addEventListener('click', applyFilters);
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.uuid-link')) document.getElementById('userPopover').classList.remove('active');
+    });
+    renderList();
+</script>
+</body>
+</html>
