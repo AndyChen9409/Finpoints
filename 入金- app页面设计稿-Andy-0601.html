@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Prime · 入金</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding: 20px 16px 40px;
+            min-height: 100vh;
+        }
+        .deposit-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            padding: 24px 20px 32px;
+        }
+        .page-header {
+            margin-bottom: 28px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .page-header h1 i {
+            color: #2563eb;
+            font-size: 26px;
+        }
+        .page-header p {
+            font-size: 14px;
+            color: #5b6e8c;
+            margin-top: 6px;
+        }
+        .form-section {
+            margin-bottom: 28px;
+        }
+        .field-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .field-label i {
+            color: #2563eb;
+            font-size: 14px;
+        }
+        .required-star {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+        .select-card {
+            background: #f9fafc;
+            border: 1px solid #eef2ff;
+            border-radius: 20px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .select-card:hover {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        .select-card .selected-value {
+            font-weight: 500;
+            color: #0f172a;
+        }
+        .select-card .placeholder {
+            color: #94a3b8;
+        }
+        .select-card i {
+            color: #6c86a3;
+            font-size: 14px;
+        }
+        .amount-input-wrapper {
+            background: #f9fafc;
+            border: 1px solid #eef2ff;
+            border-radius: 20px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .amount-input-wrapper input {
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            font-weight: 600;
+            width: 70%;
+            outline: none;
+            padding: 12px 0;
+            font-family: 'Inter', monospace;
+        }
+        .amount-input-wrapper input::placeholder {
+            color: #cbd5e1;
+            font-weight: 400;
+        }
+        .currency-unit {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2563eb;
+            background: #eef2ff;
+            padding: 6px 14px;
+            border-radius: 40px;
+        }
+        .amount-hint {
+            font-size: 12px;
+            color: #6c86a3;
+            margin-top: 8px;
+            padding-left: 12px;
+        }
+        .fee-preview {
+            background: #f1f5f9;
+            border-radius: 20px;
+            padding: 14px 16px;
+            margin: 16px 0 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .fee-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #334155;
+        }
+        .fee-value {
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .expected-row {
+            background: #eef2ff;
+            border-radius: 20px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .safety-list {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 16px;
+            margin: 24px 0 20px;
+            font-size: 12px;
+            color: #475569;
+            line-height: 1.6;
+        }
+        .safety-list li {
+            margin-bottom: 10px;
+            list-style: none;
+            display: flex;
+            gap: 8px;
+        }
+        .safety-list i {
+            color: #2563eb;
+            margin-top: 2px;
+            font-size: 12px;
+        }
+        .btn-pay {
+            background: #2563eb;
+            width: 100%;
+            border: none;
+            border-radius: 60px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 16px;
+        }
+        .btn-pay:active {
+            background: #1d4ed8;
+            transform: scale(0.98);
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .action-sheet {
+            background: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 28px 28px 0 0;
+            padding: 20px 0 30px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .modal-overlay.active .action-sheet {
+            transform: translateY(0);
+        }
+        .action-sheet-header {
+            padding: 0 20px 16px;
+            border-bottom: 1px solid #eff3f8;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .action-sheet-list {
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .action-item {
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .action-item:active {
+            background: #f1f5f9;
+        }
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .balance-amount {
+            font-weight: 500;
+            color: #5b6e8c;
+            font-size: 13px;
+        }
+        .close-sheet {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        /* 手续费提示tooltip样式 */
+        .info-icon {
+            cursor: pointer;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 12px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: normal;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .info-icon:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            .deposit-container {
+                padding: 20px 16px;
+            }
+            .tooltip-text {
+                white-space: normal;
+                width: 200px;
+                bottom: 150%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="deposit-container">
+    <div class="page-header">
+        <h1><i class="fas fa-arrow-down-to-bracket"></i> 入金</h1>
+        <p>选择资金来源 · 快捷入金</p>
+    </div>
+
+    <!-- 1. 入金账户 -->
+    <div class="form-section">
+        <div class="field-label"><i class="fas fa-wallet"></i> 入金账户 <span class="required-star">*</span></div>
+        <div class="select-card" id="selectAccountBtn">
+            <span class="selected-value" id="accountSelectedText">请选择</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+
+    <!-- 2. 入金方式（默认改为“数字货币（在线支付）”） -->
+    <div class="form-section">
+        <div class="field-label"><i class="fas fa-exchange-alt"></i> 入金方式 <span class="required-star">*</span></div>
+        <div class="select-card" id="selectMethodBtn">
+            <span class="selected-value" id="methodSelectedText">数字货币（在线支付）</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+
+    <!-- 3. 支付币种（改为两步选择：币种+网络，组合显示） -->
+    <div class="form-section">
+        <div class="field-label"><i class="fas fa-coins"></i> 支付币种 <span class="required-star">*</span></div>
+        <div class="select-card" id="selectCurrencyBtn">
+            <span class="selected-value" id="currencySelectedText">请选择币种和网络</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+
+    <!-- 4. 金额及预估 -->
+    <div class="form-section">
+        <div class="field-label"><i class="fas fa-dollar-sign"></i> 金额 <span class="required-star">*</span></div>
+        <div class="amount-input-wrapper">
+            <input type="number" id="amountInput" placeholder="0.00" step="any" value="">
+            <div class="currency-unit" id="currencyUnitLabel">USDT</div>
+        </div>
+        <div class="amount-hint" id="amountLimitHint">最低限额 100.00 USDT，最高限额 100,000.00 USDT</div>
+    </div>
+
+    <!-- 动态展示 -->
+    <div id="dynamicPreview">
+        <div class="expected-row">
+            <span class="fee-label">预计到账金额</span>
+            <span class="fee-value" id="expectedAmount">0.000000</span>
+        </div>
+        <div class="fee-preview">
+            <span class="fee-label">入金手续费 
+                <span class="info-icon">
+                    <i class="fas fa-info-circle" style="font-size: 12px; color:#6c86a3;"></i>
+                    <span class="tooltip-text">手续费 = 金额 × 0.3%</span>
+                </span>
+            </span>
+            <span class="fee-value" id="feeAmount">0.000000 USDT</span>
+        </div>
+    </div>
+
+    <!-- 安全提示（不变） -->
+    <div class="safety-list">
+        <ul style="padding-left: 0;">
+            <li><i class="fas fa-hourglass-half"></i> 1. 请在倒计时有效期内完成转账，超时后请勿继续操作，由此产生的资金损失需由转账人自行承担。</li>
+            <li><i class="fas fa-check-double"></i> 2. 请仔细核对收款钱包地址、区块链网络（ERC20/BEP20）、币种信息，地址或网络选择错误将导致资产无法找回。</li>
+            <li><i class="fas fa-ban"></i> 3. 链上转账一经提交不可撤销、无法拦截，请确认转账信息无误后再提交。</li>
+            <li><i class="fas fa-shield-alt"></i> 4. 请勿向陌生地址转账，警惕诈骗、钓鱼链接及虚假收款码，保护自身资产安全。</li>
+            <li><i class="fas fa-chart-line"></i> 5. 网络拥堵、手续费异常可能导致转账延迟，请耐心等待区块确认，切勿重复发起转账。</li>
+            <li><i class="fas fa-gavel"></i> 6. 请务必使用合规资金进行转账，平台会对链上资产进行风控核查。如检测到异常资产，将按规则冻结对应资金。</li>
+        </ul>
+    </div>
+
+    <button class="btn-pay" id="confirmPayBtn">
+        <i class="fas fa-lock"></i> 确认支付
+    </button>
+</div>
+
+<!-- 底部弹出层 -->
+<div id="actionSheetModal" class="modal-overlay">
+    <div class="action-sheet">
+        <div class="action-sheet-header">
+            <span id="sheetTitle">请选择</span>
+            <button class="close-sheet" id="closeSheetBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="action-sheet-list" id="sheetListContainer"></div>
+    </div>
+</div>
+
+<script>
+    // ---------- 入金账户 (两级选择) ----------
+    const accountTypeOptions = [
+        { label: "钱包", value: "wallet" },
+        { label: "综合账户（AU0000137）-期货", value: "futures" },
+        { label: "综合账户（AU0000137）-证券", value: "securities" }
+    ];
+    const walletCurrencyOptions = [
+        { label: "USD", balance: "500,000.00", rateToUSDT: 1.0 },    // 1 USDT = 1 USD
+        { label: "HKD", balance: "985,693.38", rateToUSDT: 7.85 }     // 1 USDT = 7.85 HKD
+    ];
+
+    // 其他字段
+    const methodOptions = [
+        { label: "国际电汇", value: "wire" },
+        { label: "本地银行汇款", value: "local_bank" },
+        { label: "数字货币（在线支付）", value: "crypto_online" }
+    ];
+    
+    // 支付币种：两步选择 (币种 + 网络)
+    const currencyOptions = [
+        { label: "USDT", value: "USDT" },
+        { label: "USDC", value: "USDC" }
+    ];
+    const networkOptions = [
+        { label: "TRC20", value: "TRC20" },
+        { label: "ERC20", value: "ERC20" },
+        { label: "BEP20", value: "BEP20" }
+    ];
+
+    // 状态变量
+    let selectedAccountType = null;          // 'wallet', 'futures', 'securities'
+    let selectedWalletCurrencyObj = null;    // 钱包币种对象 { label, rateToUSDT }
+    let selectedMethod = methodOptions[2].label; // 默认改为“数字货币（在线支付）”
+    let selectedCurrency = null;              // 币种 USDT/USDC
+    let selectedNetwork = null;               // 网络 TRC20/ERC20/BEP20
+    let selectedCombinedCrypto = "";          // 组合后的显示，如 "USDT-ERC20"
+
+    // DOM 元素
+    const accountSelectedSpan = document.getElementById('accountSelectedText');
+    const methodSelectedSpan = document.getElementById('methodSelectedText');
+    const currencySelectedSpan = document.getElementById('currencySelectedText');
+    const selectAccountBtn = document.getElementById('selectAccountBtn');
+    const selectMethodBtn = document.getElementById('selectMethodBtn');
+    const selectCurrencyBtn = document.getElementById('selectCurrencyBtn');
+    const amountInput = document.getElementById('amountInput');
+    const expectedSpan = document.getElementById('expectedAmount');
+    const feeSpan = document.getElementById('feeAmount');
+    const amountLimitHint = document.getElementById('amountLimitHint');
+
+    // 弹窗
+    const modal = document.getElementById('actionSheetModal');
+    const sheetTitle = document.getElementById('sheetTitle');
+    const sheetListContainer = document.getElementById('sheetListContainer');
+    const closeSheetBtn = document.getElementById('closeSheetBtn');
+
+    // 常量
+    const MIN_AMOUNT = 100;
+    const MAX_AMOUNT = 100000;
+    const FEE_RATE = 0.003;
+
+    // 辅助函数：获取当前入金账户对应的目标币种和汇率（1 USDT = ? 目标币）
+    function getTargetCurrencyAndRate() {
+        if (!selectedAccountType) return { currency: null, rate: 1 };
+        if (selectedAccountType === 'wallet') {
+            if (selectedWalletCurrencyObj) {
+                return { currency: selectedWalletCurrencyObj.label, rate: selectedWalletCurrencyObj.rateToUSDT };
+            } else {
+                return { currency: null, rate: 1 };
+            }
+        } else {
+            // 综合账户（期货/证券）统一视为 USD
+            return { currency: "USD", rate: 1.0 };
+        }
+    }
+
+    // 更新手续费（始终显示 USDT）和预计到账金额（动态币种）
+    function updateAmountPreview() {
+        let rawAmount = amountInput.value.trim();
+        let amountNum = parseFloat(rawAmount);
+        if (isNaN(amountNum) || rawAmount === "") amountNum = 0;
+        let fee = amountNum * FEE_RATE;
+        let netUSDT = amountNum - fee;
+        feeSpan.innerText = fee.toFixed(6) + " USDT";
+
+        const { currency, rate } = getTargetCurrencyAndRate();
+        let expectedValue = netUSDT * rate;
+        if (currency) {
+            expectedSpan.innerText = expectedValue.toFixed(6) + " " + currency;
+        } else {
+            expectedSpan.innerText = "0.000000";
+        }
+
+        // 限额提示样式
+        if (amountNum > 0 && (amountNum < MIN_AMOUNT || amountNum > MAX_AMOUNT)) {
+            amountLimitHint.style.color = "#dc2626";
+        } else {
+            amountLimitHint.style.color = "#6c86a3";
+        }
+    }
+
+    amountInput.addEventListener('input', function(e) {
+        let val = e.target.value;
+        let num = parseFloat(val);
+        if (!isNaN(num)) {
+            if (num < MIN_AMOUNT) {
+                amountLimitHint.innerText = `⚠️ 最低限额 ${MIN_AMOUNT.toFixed(2)} USDT，您输入金额低于限额`;
+            } else if (num > MAX_AMOUNT) {
+                amountLimitHint.innerText = `⚠️ 最高限额 ${MAX_AMOUNT.toLocaleString()} USDT，您输入金额超出限额`;
+            } else {
+                amountLimitHint.innerText = `最低限额 ${MIN_AMOUNT.toFixed(2)} USDT，最高限额 ${MAX_AMOUNT.toLocaleString()} USDT`;
+            }
+        } else {
+            amountLimitHint.innerText = `最低限额 ${MIN_AMOUNT.toFixed(2)} USDT，最高限额 ${MAX_AMOUNT.toLocaleString()} USDT`;
+        }
+        updateAmountPreview();
+    });
+
+    // 更新入金账户显示
+    function updateAccountDisplay() {
+        if (!selectedAccountType) {
+            accountSelectedSpan.innerText = "请选择";
+            accountSelectedSpan.style.color = "#94a3b8";
+            return;
+        }
+        if (selectedAccountType === 'wallet' && selectedWalletCurrencyObj) {
+            accountSelectedSpan.innerText = selectedWalletCurrencyObj.label;
+            accountSelectedSpan.style.color = "#0f172a";
+        } else if (selectedAccountType === 'futures') {
+            accountSelectedSpan.innerText = "综合账户-期货";
+            accountSelectedSpan.style.color = "#0f172a";
+        } else if (selectedAccountType === 'securities') {
+            accountSelectedSpan.innerText = "综合账户-证券";
+            accountSelectedSpan.style.color = "#0f172a";
+        } else {
+            accountSelectedSpan.innerText = "请选择";
+            accountSelectedSpan.style.color = "#94a3b8";
+        }
+        updateAmountPreview();
+    }
+
+    // 更新支付币种显示（组合币种+网络）
+    function updateCurrencyDisplay() {
+        if (selectedCurrency && selectedNetwork) {
+            const combined = `${selectedCurrency}-${selectedNetwork}`;
+            currencySelectedSpan.innerText = combined;
+            currencySelectedSpan.style.color = "#0f172a";
+            selectedCombinedCrypto = combined;
+        } else {
+            currencySelectedSpan.innerText = "请选择币种和网络";
+            currencySelectedSpan.style.color = "#94a3b8";
+            selectedCombinedCrypto = "";
+        }
+    }
+
+    // 通用底部弹窗
+    function openActionSheet(options, title, onSelect) {
+        sheetTitle.innerText = title;
+        sheetListContainer.innerHTML = "";
+        options.forEach(opt => {
+            const div = document.createElement('div');
+            div.className = 'action-item';
+            if (opt.balance) {
+                div.innerHTML = `<div class="balance-item"><span>${opt.label}</span><span class="balance-amount">余额：${opt.balance}</span></div>`;
+            } else {
+                div.innerText = opt.label;
+            }
+            div.addEventListener('click', () => {
+                closeModal();
+                onSelect(opt);
+            });
+            sheetListContainer.appendChild(div);
+        });
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+    }
+
+    // 第一步：账户类型选择
+    function showAccountTypeSheet() {
+        openActionSheet(accountTypeOptions, "请选择账户类型", (selectedType) => {
+            if (selectedType.value === 'wallet') {
+                openActionSheet(walletCurrencyOptions, "选择币种", (selectedCurrency) => {
+                    selectedAccountType = 'wallet';
+                    selectedWalletCurrencyObj = { label: selectedCurrency.label, rateToUSDT: selectedCurrency.rateToUSDT };
+                    updateAccountDisplay();
+                });
+            } else {
+                selectedAccountType = selectedType.value;
+                selectedWalletCurrencyObj = null;
+                updateAccountDisplay();
+            }
+        });
+    }
+
+    // 入金方式
+    function showMethodSheet() {
+        openActionSheet(methodOptions, "选择入金方式", (opt) => {
+            selectedMethod = opt.label;
+            methodSelectedSpan.innerText = selectedMethod;
+        });
+    }
+
+    // 支付币种：两步选择（先选币种，再选网络）
+    function showCurrencySheet() {
+        // 第一步：选择币种 (USDT / USDC)
+        openActionSheet(currencyOptions, "选择币种", (selectedCurr) => {
+            const tempCurrency = selectedCurr.label;
+            // 第二步：选择网络 (TRC20/ERC20/BEP20)
+            openActionSheet(networkOptions, "选择网络", (selectedNet) => {
+                selectedCurrency = tempCurrency;
+                selectedNetwork = selectedNet.label;
+                updateCurrencyDisplay();
+            });
+        });
+    }
+
+    // 绑定事件
+    selectAccountBtn.addEventListener('click', showAccountTypeSheet);
+    selectMethodBtn.addEventListener('click', showMethodSheet);
+    selectCurrencyBtn.addEventListener('click', showCurrencySheet);
+    closeSheetBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    // 确认支付
+    const confirmBtn = document.getElementById('confirmPayBtn');
+    confirmBtn.addEventListener('click', () => {
+        let amountVal = amountInput.value.trim();
+        let amountNum = parseFloat(amountVal);
+        if (isNaN(amountNum) || amountVal === "") {
+            alert("请输入入金金额");
+            return;
+        }
+        if (amountNum < MIN_AMOUNT) {
+            alert(`入金金额不能低于 ${MIN_AMOUNT} USDT`);
+            return;
+        }
+        if (amountNum > MAX_AMOUNT) {
+            alert(`入金金额不能高于 ${MAX_AMOUNT} USDT`);
+            return;
+        }
+        if (!selectedAccountType) {
+            alert("请选择入金账户");
+            return;
+        }
+        if (selectedAccountType === 'wallet' && !selectedWalletCurrencyObj) {
+            alert("请选择钱包币种");
+            return;
+        }
+        if (!selectedMethod) {
+            alert("请选择入金方式");
+            return;
+        }
+        if (!selectedCurrency || !selectedNetwork) {
+            alert("请选择支付币种（币种和网络）");
+            return;
+        }
+
+        const paymentUrl = "https://lesspay2-pay.doopayment.com/webcashier/c4b7834f11c9b9bfffc5ccec236b8ab9/4bf712ad0126f1f65e42e6e63e5efcd397e5f396dc9c5ed0dc5c4dcd731892b6";
+        window.open(paymentUrl, '_blank');
+        const toast = document.createElement('div');
+        toast.innerText = "正在跳转至 Doo Payment 收银台...";
+        toast.style.position = 'fixed';
+        toast.style.bottom = '30px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = '#1e293b';
+        toast.style.color = 'white';
+        toast.style.padding = '10px 20px';
+        toast.style.borderRadius = '40px';
+        toast.style.fontSize = '14px';
+        toast.style.zIndex = '1100';
+        toast.style.opacity = '0.9';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    });
+
+    // 初始化
+    function init() {
+        methodSelectedSpan.innerText = selectedMethod;
+        amountLimitHint.innerText = `最低限额 ${MIN_AMOUNT.toFixed(2)} USDT，最高限额 ${MAX_AMOUNT.toLocaleString()} USDT`;
+        amountInput.value = "";
+        updateAmountPreview();
+        updateAccountDisplay();
+        updateCurrencyDisplay();
+        // 金额输入限制
+        amountInput.addEventListener('keypress', function(e) {
+            const charCode = e.which ? e.which : e.keyCode;
+            if (charCode !== 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                e.preventDefault();
+            }
+            const val = this.value;
+            const dotIndex = val.indexOf('.');
+            if (dotIndex !== -1 && val.length - dotIndex - 1 >= 8 && e.key === '.') {
+                e.preventDefault();
+            }
+        });
+        amountInput.dispatchEvent(new Event('input'));
+    }
+    init();
+</script>
+</body>
+</html>
